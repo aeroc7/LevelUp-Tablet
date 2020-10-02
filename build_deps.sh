@@ -39,7 +39,7 @@ function build_deps_lin()
 	sleep 1.5
 	git clone --recursive "https://github.com/openssl/openssl.git"
 	cd openssl
-	./config
+	./config --no-shared
 	make
 	sudo make install
 
@@ -74,6 +74,8 @@ function build_deps_lin()
 	cp $PWD/lib/libGLEW.a $BUILD_FIN_DIR/
 	cp -r $PWD/include $BUILD_FIN_DIR/
 	
+	cd ../../
+	
 	echo "Building SDK..."
 	sleep 1.5
 	wget -O sdkz "http://developer.x-plane.com/wp-content/plugins/code-sample-generation/sample_templates/XPSDK303.zip"
@@ -82,9 +84,50 @@ function build_deps_lin()
 	
 	#install it
 	cp -r $PWD/SDK $BUILD_FIN_DIR/
+	
+	cd ../
+	
+	echo "Building dependency Pixman..."
+	sleep 1.5
+	git clone --recursive "https://github.com/freedesktop/pixman.git" pixman
+	cd pixman
+	./autogen.sh --prefix=$BUILD_FIN_DIR --enable-static --disable-shared --disable-libpng --disable-gtk --disable-static-testprogs --disable-openmp
+    	make -j10
+    	make install
+    	cd ../
 
-	cd ../../../
-
+	echo "Building dependency Freetype..."
+	sleep 1.5
+	git clone --recursive "https://github.com/aseprite/freetype2.git" freetype
+	cd freetype
+	./autogen.sh --enable-static --disable-shared --without-harfbuzz
+	make
+	make
+	#move build libs/includes
+	cd objs/.libs
+	cp $PWD/libfreetype.a $BUILD_FIN_DIR
+	cd ../../
+	cp -r $PWD/include $BUILD_FIN_DIR
+	cd ../
+	
+	sleep 100000
+	
+	echo "Building dependency Cairo..."
+	sleep 1.5
+	git clone --recursive "https://github.com/freedesktop/cairo.git" cairo
+	cd cairo
+	export pixman_CFLAGS=-I$BUILD_FIN_DIR/include/pixman-1
+    	export pixman_LIBS=$BUILD_FIN_DIR/lib/libpixman-1.a
+    	export FREETYPE_CFLAGS=-I$BUILD_FIN_DIR/include/
+    	export FREETYPE_LIBS=$BUILD_FIN_DIR/libfreetype.a
+    	./autogen.sh --prefix=$BUILD_FIN_DIR --enable-static --disable-egl --disable-glesv2 --disable-glesv3 --disable-glx --disable-gl --disable-valgrind --disable-xlib --enable-ft --disable-shared --disable-xlib-xrender --disable-xcb --disable-svg --disable-full-testing --disable-interpreter --disable-fc --disable-ps --disable-pdf --disable-glesv2 --disable-win32 --disable-win32-font --disable-drm --disable-png --disable-script --disable-quartz --disable-wgl --disable-gobject --disable-trace --disable-symbol-lookup
+    	sed -i src/cairo-misc.c -e "s/^#ifdef _WIN32 \/\* also defined on x86_64 \*\//#if 0/gi"
+    	sed -i build/configure.ac.warnings -e "^s/MAYBE_WARN=\"\$MAYBE_WARN -Wp,-D_FORTIFY_SOURCE=2\"//gi"
+    	make -j10 -fPIC
+    	make install
+    	cd ../
+    	
+  	cd ../
 	rm -rf temp_dls
 
 	echo "Finished!"
