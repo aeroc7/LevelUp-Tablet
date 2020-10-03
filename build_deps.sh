@@ -37,7 +37,7 @@ function build_deps_lin()
 
 	echo "Building OpenSSL..."
 	sleep 1.5
-	git clone --recursive "https://github.com/openssl/openssl.git"
+	git clone "https://github.com/openssl/openssl.git"
 	cd openssl
 	./config --no-shared
 	make
@@ -109,8 +109,6 @@ function build_deps_lin()
 	cd ../../
 	cp -r $PWD/include $BUILD_FIN_DIR
 	cd ../
-	
-	sleep 100000
 	
 	echo "Building dependency Cairo..."
 	sleep 1.5

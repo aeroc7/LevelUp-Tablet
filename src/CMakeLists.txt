@@ -1,4 +1,4 @@
-#include(${CMAKE_CURRENT_LIST_DIR}/aircraft/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/tablet/CMakeLists.txt)
 
 set(SRC
 	${SRC}
