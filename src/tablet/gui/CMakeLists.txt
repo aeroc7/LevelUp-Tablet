@@ -4,11 +4,13 @@ set(SRC
 	${SRC}
     ${CMAKE_CURRENT_LIST_DIR}/gui_main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gui_brains.cpp
+		${CMAKE_CURRENT_LIST_DIR}/standalone-wind.cpp
 	)
-	
+
 set(HDR
 	${HDR}
     ${CMAKE_CURRENT_LIST_DIR}/gui_main.h
     ${CMAKE_CURRENT_LIST_DIR}/gui_brains.h
     ${CMAKE_CURRENT_LIST_DIR}/gui_colors.h
+		${CMAKE_CURRENT_LIST_DIR}/standalone-wind.h
 	)

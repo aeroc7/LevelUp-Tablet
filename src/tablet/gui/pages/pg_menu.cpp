@@ -4,7 +4,7 @@
 
 CmpPage page_tt("test");
 
-void PgMenu::draw_menu(cairo_t * cr) 
+void PgMenu::draw_menu(cairo_t * cr)
 {
     page_tt.draw_page(cr);
 }

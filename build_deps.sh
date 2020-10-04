@@ -41,7 +41,6 @@ function build_deps_lin()
 	cd openssl
 	./config --no-shared
 	make
-	sudo make install
 
 	#install it
 	cp $PWD/libcrypto.a $BUILD_FIN_DIR/
@@ -82,7 +81,7 @@ function build_deps_lin()
 	unzip sdkz -d SDK
 	cd SDK
 	
-	#install it
+	install it
 	cp -r $PWD/SDK $BUILD_FIN_DIR/
 	
 	cd ../
@@ -131,4 +130,30 @@ function build_deps_lin()
 	echo "Finished!"
 }
 
-build_deps_lin
+function testing()
+{
+	echo "Building Dependencies..."
+	sleep 1.5
+
+	mkdir $PWD/deps
+	mkdir $PWD/temp_dls
+
+	BUILD_FIN_DIR=$PWD/deps
+
+	cd temp_dls
+
+	echo "Building zlib..."
+	sleep 1.5
+	git clone --recursive "https://github.com/madler/zlib.git"
+	cd zlib
+	./configure --prefix=$PWD/build
+	make
+	make install
+
+	#install it to our directory
+	cp $PWD/build/lib/libz.a $BUILD_FIN_DIR/
+
+	cd ../
+}
+
+testing

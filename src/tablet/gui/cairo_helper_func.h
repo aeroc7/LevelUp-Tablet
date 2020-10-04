@@ -3,6 +3,7 @@
 
 #include <cairo/cairo.h>
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 inline void cairo_rounded_rectangle(cairo_t * cr, double x, double y,
